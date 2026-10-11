@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickSend for WA Web - personalised messages from Excel</title>
+<meta name="description" content="Send personalised payment reminders, follow-ups and offers on WA Web from your Excel sheet. Free for 50 messages a month.">
+<meta property="og:title" content="QuickSend for WA Web">
+<meta property="og:description" content="Your Excel sheet becomes personalised WhatsApp Web messages - names, amounts and dates filled in for every customer.">
+<meta property="og:image" content="logo.png">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== Links: edit these three if they change ===== */
+  /* Store, monthly and yearly links are set in the HTML below (search for href=). */
+
+  :root {
+    --paper: #ffffff;
+    --rule: #dbe6f4;        /* ledger ruling */
+    --margin: #d64545;      /* red margin line of an account book */
+    --ink: #13233f;
+    --soft: #4a5a78;
+    --green: #1a9c4f;
+    --bubble: #e2f7e7;
+    --hl: #fff1a8;          /* highlighter */
+    --line: #c9d6e8;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 400 18px/1.6 "Hind", "Segoe UI", Arial, sans-serif;
+  }
+  a { color: var(--ink); }
+  :focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3 { font-family: "Bricolage Grotesque", "Segoe UI", sans-serif; line-height: 1.12; margin: 0; }
+  h1 { font-size: clamp(36px, 4.6vw, 56px); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(28px, 3.4vw, 40px); font-weight: 700; letter-spacing: -0.01em; }
+  h3 { font-size: 21px; font-weight: 700; }
+  p { margin: 0; }
+
+  /* ---------- top bar ---------- */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 700 20px "Bricolage Grotesque", sans-serif; }
+  .brand img { width: 36px; height: 36px; }
+  .top nav { display: flex; gap: 22px; font-weight: 500; }
+  .top nav a { text-decoration: none; color: var(--soft); }
+  .top nav a:hover { color: var(--ink); }
+
+  .btn { display: inline-block; text-decoration: none; font-weight: 600; font-size: 17px; border-radius: 10px;
+         padding: 13px 22px; border: 2px solid var(--ink); background: var(--ink); color: #fff; }
+  .btn:hover { background: #0b1830; }
+  .btn.alt { background: transparent; color: var(--ink); }
+  .btn.alt:hover { background: #f1f5fb; }
+  .btn.green { background: var(--green); border-color: var(--green); }
+  .btn.green:hover { background: #158342; }
+
+  /* ---------- hero: the ledger ---------- */
+  .hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; padding: 40px 0 72px; }
+  .hero > * { min-width: 0; }
+  .hero p.lead { font-size: 21px; color: var(--soft); margin: 20px 0 30px; max-width: 32em; }
+  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero .small { margin-top: 14px; font-size: 15px; color: var(--soft); }
+
+  .demo { position: relative; }
+  .ledger {
+    background:
+      linear-gradient(90deg, transparent 54px, var(--margin) 54px, var(--margin) 56px, transparent 56px),
+      repeating-linear-gradient(180deg, #fff 0, #fff 43px, var(--rule) 43px, var(--rule) 44px);
+    border: 1px solid var(--line); border-radius: 6px 6px 0 0; padding: 0 0 0 0; overflow: hidden;
+  }
+  .ledger table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .ledger th, .ledger td { height: 44px; padding: 0 12px; text-align: left; white-space: nowrap; }
+  .ledger th { font-weight: 600; color: var(--soft); font-size: 14px; }
+  .ledger td:first-child, .ledger th:first-child { width: 56px; text-align: center; color: var(--margin); font-weight: 600; }
+  .ledger tr.on td { background: rgba(255, 241, 168, .55); }
+  .ledger td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ledger th.num { text-align: right; }
+
+  .chat { background: #efeae2; border: 1px solid var(--line); border-top: none; border-radius: 0 0 6px 6px; padding: 18px 18px 22px; }
+  .bubble { margin-left: auto; max-width: 92%; background: var(--bubble); border-radius: 10px 2px 10px 10px; padding: 10px 14px 8px;
+            font-size: 16px; line-height: 1.5; box-shadow: 0 1px 0 rgba(19,35,63,.12); }
+  .bubble mark { background: var(--hl); padding: 0 3px; border-radius: 3px; color: inherit; }
+  .bubble .meta { text-align: right; font-size: 12px; color: var(--soft); margin-top: 2px; }
+  .ticks { color: #34b7f1; font-weight: 700; opacity: 0; transition: opacity .3s; }
+  .ticks.show { opacity: 1; }
+  .to { font-size: 13px; color: var(--soft); margin-bottom: 8px; }
+
+  /* ---------- sections ---------- */
+  section { padding: 76px 0; border-top: 1px solid var(--line); }
+  .intro { max-width: 40em; margin-bottom: 36px; }
+  .intro p { color: var(--soft); margin-top: 12px; font-size: 19px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; counter-reset: s; }
+  .steps li { list-style: none; position: relative; padding-top: 52px; }
+  .steps li::before { counter-increment: s; content: counter(s); position: absolute; top: 0; left: 0;
+    font: 800 40px "Bricolage Grotesque", sans-serif; color: var(--margin); }
+  .steps p { color: var(--soft); margin-top: 8px; }
+  .steps ol { padding: 0; margin: 0; }
+
+  .uses { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; }
+  .use { padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .use p { color: var(--soft); margin-top: 4px; }
+  .use q { display: block; margin-top: 8px; font-size: 16px; background: var(--bubble); border-radius: 8px; padding: 8px 12px; quotes: none; }
+
+  .feat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 40px; }
+  .feat p { color: var(--soft); margin-top: 6px; }
+
+  /* pricing */
+  .plans { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 20px; align-items: stretch; }
+  .plan { border: 1px solid var(--line); border-radius: 12px; padding: 26px; display: flex; flex-direction: column; }
+  .plan.best { border: 2px solid var(--green); }
+  .plan .price { font: 800 40px "Bricolage Grotesque", sans-serif; margin: 10px 0 2px; }
+  .plan .per { color: var(--soft); font-size: 16px; }
+  .plan ul { padding-left: 20px; margin: 18px 0 24px; color: var(--soft); flex: 1; }
+  .plan li { margin: 4px 0; }
+  .plan .btn { text-align: center; }
+  .save { display: inline-block; background: var(--hl); border-radius: 4px; padding: 0 6px; font-weight: 600; font-size: 15px; }
+  .note { margin-top: 18px; color: var(--soft); font-size: 16px; }
+
+  /* referral */
+  .refer { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+  .refer p { color: var(--soft); margin-top: 12px; }
+  .coupon { border: 2px dashed var(--margin); border-radius: 12px; padding: 24px; }
+  .coupon b { font: 700 24px "Bricolage Grotesque", sans-serif; display: block; }
+  .coupon span { color: var(--soft); }
+  .coupon hr { border: none; border-top: 1px dashed var(--line); margin: 16px 0; }
+
+  /* faq */
+  .faq { max-width: 780px; }
+  details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 19px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 24px; line-height: 1; color: var(--soft); }
+  details[open] summary::after { content: "−"; }
+  details p { color: var(--soft); margin-top: 10px; }
+
+  .final { text-align: left; }
+  .final .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--soft); font-size: 15px; }
+  footer .row { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  footer a { color: var(--soft); }
+  footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .hero, .refer { grid-template-columns: 1fr; gap: 36px; }
+    .steps, .feat { grid-template-columns: 1fr; gap: 26px; }
+    .uses { grid-template-columns: 1fr; }
+    .plans { grid-template-columns: 1fr; }
+    .top nav { display: none; }
+    .ledger th.hide, .ledger td.hide { display: none; }
+    .ledger { overflow-x: auto; }
+    .ledger table { font-size: 14px; }
+    .ledger th, .ledger td { padding: 0 8px; }
+    .ledger td:first-child, .ledger th:first-child { width: 40px; }
+    .ledger { background:
+      linear-gradient(90deg, transparent 38px, var(--margin) 38px, var(--margin) 40px, transparent 40px),
+      repeating-linear-gradient(180deg, #fff 0, #fff 43px, var(--rule) 43px, var(--rule) 44px); }
+    .top .btn { padding: 10px 14px; font-size: 15px; }
+    body { font-size: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .ticks { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="logo.png" alt="">QuickSend</a>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn alt" href="https://chromewebstore.google.com/detail/onipoefkcpcnjhghhheaggbbakdejmdi">Add to Chrome</a>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <main>
+  <div class="hero">
+    <div>
+      <h1>Your Excel sheet, sent as personal WhatsApp messages.</h1>
+      <p class="lead">QuickSend reads every row of your sheet and writes each customer their own message - their name, their amount,
+        their due date - then sends it from your WhatsApp Web. No copy-paste, no typing the same thing fifty times.</p>
+      <div class="ctas">
+        <a class="btn green" href="https://chromewebstore.google.com/detail/onipoefkcpcnjhghhheaggbbakdejmdi">Add to Chrome - it's free</a>
+        <a class="btn alt" href="#how">See how it works</a>
+      </div>
+      <p class="small">Free for 50 messages every month. Works in Chrome on your computer.</p>
+    </div>
+
+    <div class="demo" aria-label="Example: a row of the Excel sheet becomes a WhatsApp message">
+      <div class="ledger">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th class="num">Amount</th><th>Due date</th><th class="hide">City</th></tr></thead>
+          <tbody id="rows">
+            <tr class="on"><td>1</td><td>Patel Traders</td><td class="num">25,000</td><td>15-10-2026</td><td class="hide">Vadodara</td></tr>
+            <tr><td>2</td><td>Shree Ganesh Stores</td><td class="num">8,450</td><td>18-10-2026</td><td class="hide">Anand</td></tr>
+            <tr><td>3</td><td>Mehta &amp; Sons</td><td class="num">1,12,000</td><td>20-10-2026</td><td class="hide">Surat</td></tr>
+            <tr><td>4</td><td>Krishna Medicals</td><td class="num">3,200</td><td>22-10-2026</td><td class="hide">Nadiad</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chat">
+        <div class="to" id="to">To: Patel Traders</div>
+        <div class="bubble" aria-live="polite">
+          <div id="msg">Dear <mark>Patel Traders</mark>, this is a friendly reminder that <b>Rs. <mark>25,000</mark></b> is due on <mark>15-10-2026</mark>. Kindly arrange the payment. Thank you!</div>
+          <div class="meta">10:42 <span class="ticks show" id="ticks">✓✓</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HOW ===== -->
+  <section id="how">
+    <div class="intro">
+      <h2>Three steps, about five minutes.</h2>
+      <p>Everything happens inside WhatsApp Web, in a panel on the right side of the screen.</p>
+    </div>
+    <div class="steps"><ol style="display:contents">
+      <li><h3>Choose who to send to</h3>
+        <p>Open your Excel sheet, paste a list of numbers, or tick people from your saved contacts and groups.</p></li>
+      <li><h3>Write the message once</h3>
+        <p>Pick a ready template or type your own. Click a column name to insert it, like {Name} or {Amount}, and preview the first message.</p></li>
+      <li><h3>Send and get a report</h3>
+        <p>QuickSend sends one by one with a short random pause, and gives you an Excel report of who received it.</p></li>
+    </ol></div>
+  </section>
+
+  <!-- ===== USES ===== -->
+  <section>
+    <div class="intro">
+      <h2>Made for the messages you send every week.</h2>
+      <p>Shops, distributors, dealers, coaching classes, clinics, agents - anyone who keeps their customers in a sheet.</p>
+    </div>
+    <div class="uses">
+      <div class="use"><h3>Payment reminders</h3><p>Only customers with a pending amount get it.</p>
+        <q>Dear Mehta &amp; Sons, Rs. 1,12,000 is due on 20-10-2026.</q></div>
+      <div class="use"><h3>Order follow-ups</h3><p>Pending orders, delivery schedules, stock updates.</p>
+        <q>Dear Krishna Medicals, you have 3 pending orders with us.</q></div>
+      <div class="use"><h3>Targets and performance</h3><p>Each dealer sees their own target, achieved and balance.</p>
+        <q>Target 300, achieved 180, balance 120 - let's close it this month.</q></div>
+      <div class="use"><h3>Offers, meetings and greetings</h3><p>One message to a whole group, still addressed by name.</p>
+        <q>Dear Priya, wishing you and your family a very happy Diwali!</q></div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section>
+    <div class="intro"><h2>What's in the panel.</h2></div>
+    <div class="feat">
+      <div><h3>Send only to the right people</h3><p>Choose a column like Amount and rows with 0 or blank are skipped automatically.</p></div>
+      <div><h3>Templates you can edit</h3><p>Payment reminder, follow-up, target status, offers, meetings, greetings - or save your own.</p></div>
+      <div><h3>Saved contacts and groups</h3><p>Keep customers, dealers or staff in groups and tick a whole group in one click.</p></div>
+      <div><h3>Test before you send</h3><p>Send the first message to your own number and check it on your phone.</p></div>
+      <div><h3>Stop, resume, report</h3><p>Pause any time and continue later. Download a report with the status of every row.</p></div>
+      <div><h3>Your data stays with you</h3><p>Excel files and contacts are read inside your browser. They are never uploaded to us.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing">
+    <div class="intro">
+      <h2>Start free. Upgrade when you need more.</h2>
+      <p>Pro is prepaid: no automatic charges and nothing to cancel. Pay by UPI, card or net banking.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3>
+        <div class="price">₹0</div><div class="per">every month</div>
+        <ul><li>50 messages a month</li><li>All features included</li><li>Resets on the 1st</li></ul>
+        <a class="btn alt" href="https://chromewebstore.google.com/detail/onipoefkcpcnjhghhheaggbbakdejmdi">Add to Chrome</a>
+      </div>
+      <div class="plan best">
+        <h3>Pro yearly</h3>
+        <div class="price">₹2,499</div><div class="per">for 12 months <span class="save">save ₹1,089</span></div>
+        <ul><li>Unlimited messages</li><li>Works on 2 PCs</li><li>License key by email within minutes</li><li>Renewal reminder before it ends</li></ul>
+        <!-- Replace with your yearly Razorpay page link -->
+        <a class="btn green" href="YEARLY_PAGE_LINK">Buy 1 year</a>
+      </div>
+      <div class="plan">
+        <h3>Pro monthly</h3>
+        <div class="price">₹299</div><div class="per">for 1 month</div>
+        <ul><li>Unlimited messages</li><li>Works on 2 PCs</li><li>Renew any time with the same email</li></ul>
+        <a class="btn" href="https://rzp.io/l/quicksend-pro">Buy 1 month</a>
+      </div>
+    </div>
+    <p class="note">After paying, paste the license key from your email into the QuickSend panel and click Activate.
+      Full refund within 7 days of your first purchase if it doesn't work for you.</p>
+  </section>
+
+  <!-- ===== REFERRAL ===== -->
+  <section>
+    <div class="refer">
+      <div>
+        <h2>Share it with a friend, both of you save.</h2>
+        <p>Every Pro customer gets a referral code. Click "Refer" in the QuickSend panel to copy a ready invite and send it on WhatsApp.
+          Your free month is added automatically when your friend pays.</p>
+      </div>
+      <div class="coupon">
+        <b>Your friend</b><span>50% off the first month - ₹149</span>
+        <hr>
+        <b>You</b><span>1 month of Pro free for every friend who subscribes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
+    <div class="intro"><h2>Questions people ask.</h2></div>
+    <div class="faq">
+      <details><summary>Does it work on my phone?</summary>
+        <p>QuickSend runs in Chrome on a laptop or desktop with WhatsApp Web. The messages go from your own WhatsApp, so they appear on your phone as usual.</p></details>
+      <details><summary>Does it work with WhatsApp Business?</summary>
+        <p>Yes. Link your WhatsApp Business app to WhatsApp Web the same way and use QuickSend there.</p></details>
+      <details><summary>Will my number get blocked?</summary>
+        <p>QuickSend sends from your own WhatsApp Web with a random pause between messages, like you would. Message people who know you, personalise each message and start with smaller lists. If WhatsApp ever shows a warning, pause for a day.</p></details>
+      <details><summary>Do you see my customers or messages?</summary>
+        <p>No. Your Excel files, contacts and messages stay in your browser. For Pro, only your license key is checked with our server once a day.</p></details>
+      <details><summary>I paid. Where is my license key?</summary>
+        <p>It reaches the email you entered at payment within about 10 minutes. Check Spam and Promotions. Still missing? Write to us with your payment ID.</p></details>
+      <details><summary>How do I cancel Pro?</summary>
+        <p>There's nothing to cancel. Pro is prepaid and never charges automatically - it simply ends on the date shown in the panel unless you renew.</p></details>
+      <details><summary>Can I send images or PDFs?</summary>
+        <p>Not yet. QuickSend sends text messages with formatting (bold, italic) and emojis.</p></details>
+    </div>
+  </section>
+
+  <section class="final">
+    <h2>Send this week's reminders in five minutes.</h2>
+    <div class="ctas">
+      <a class="btn green" href="https://chromewebstore.google.com/detail/onipoefkcpcnjhghhheaggbbakdejmdi">Add to Chrome - it's free</a>
+      <a class="btn alt" href="mailto:quicksend.support@nexoralogics.com">Ask us a question</a>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <div class="row">
+      <div>© 2026 Nexora Logics. QuickSend is an independent tool and is not affiliated with, endorsed or sponsored by WhatsApp or Meta.</div>
+      <nav aria-label="Footer">
+        <a href="privacy.html">Privacy policy</a>
+        <a href="terms.html">Terms</a>
+        <a href="mailto:quicksend.support@nexoralogics.com">quicksend.support@nexoralogics.com</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // The hero demo: each Excel row in turn becomes a message.
+  (function () {
+    const rows = [...document.querySelectorAll("#rows tr")];
+    const msg = document.getElementById("msg"), to = document.getElementById("to"), ticks = document.getElementById("ticks");
+    const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    let i = 0;
+    function show(n) {
+      rows.forEach((r, k) => r.classList.toggle("on", k === n));
+      const c = rows[n].cells, name = c[1].textContent, amt = c[2].textContent, due = c[3].textContent;
+      to.textContent = "To: " + name;
+      msg.innerHTML = `Dear <mark>${esc(name)}</mark>, this is a friendly reminder that <b>Rs. <mark>${esc(amt)}</mark></b> ` +
+        `is due on <mark>${esc(due)}</mark>. Kindly arrange the payment. Thank you!`;
+      ticks.classList.remove("show");
+      setTimeout(() => ticks.classList.add("show"), 900);
+    }
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(() => { i = (i + 1) % rows.length; show(i); }, 3200);
+    }
+  })();
+</script>
+</body>
+</html>
