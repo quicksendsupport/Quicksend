@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hind:wght@400;500;600&display=swap");
+:root{--ink:#13233f;--soft:#4a5a78;--line:#c9d6e8;--green:#1a9c4f;--margin:#d64545;--hl:#fff1a8}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:400 18px/1.65 "Hind","Segoe UI",Arial,sans-serif}
+a{color:var(--ink)}
+:focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 20px "Bricolage Grotesque",sans-serif}
+.brand img{width:36px;height:36px}
+.top a.back{color:var(--soft);text-decoration:none;font-weight:500}
+main{max-width:46em;padding:48px 0 64px}
+h1{font:800 clamp(32px,4vw,46px)/1.12 "Bricolage Grotesque",sans-serif;letter-spacing:-.01em;margin:0}
+.updated{color:var(--soft);margin:10px 0 28px;font-size:16px}
+h2{font:700 23px/1.2 "Bricolage Grotesque",sans-serif;margin:34px 0 8px}
+p,li{color:#2a3a58}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+.card{border:1px solid var(--line);border-left:4px solid var(--margin);border-radius:8px;padding:18px 22px;margin:18px 0}
+.card dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0}
+.card dt{color:var(--soft)}
+.card dd{margin:0;font-weight:500}
+footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--soft);font-size:15px}
+footer .row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:var(--soft)}
+footer nav{display:flex;gap:16px;flex-wrap:wrap}
+@media(max-width:700px){.card dl{grid-template-columns:1fr}.card dt{margin-top:8px}}

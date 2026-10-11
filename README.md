@@ -8,3 +8,6 @@ Landing page, privacy policy and terms for QuickSend.
 - `logo.png`, `favicon.png`
 
 Before publishing: in `index.html`, replace `YEARLY_PAGE_LINK` with the yearly Razorpay page link.
+
+Policy pages for Razorpay: `refund.html`, `delivery.html`, `contact.html` (plus privacy and terms).
+In `contact.html`, replace [OWNER NAME AS IN KYC], [SUPPORT PHONE] and [FULL BUSINESS ADDRESS WITH PIN CODE].
