@@ -108,6 +108,7 @@
 
   .feat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 40px; }
   .feat p { color: var(--soft); margin-top: 6px; }
+  .pro { font: 600 13px "Hind", sans-serif; background: var(--hl); border-radius: 4px; padding: 1px 6px; vertical-align: middle; }
 
   /* pricing */
   .plans { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 20px; align-items: stretch; }
@@ -231,7 +232,7 @@
       <li><h3>Write the message once</h3>
         <p>Pick a ready template or type your own. Click a column name to insert it, like {Name} or {Amount}, and preview the first message.</p></li>
       <li><h3>Send and get a report</h3>
-        <p>QuickSend sends one by one with a short random pause, and gives you an Excel report of who received it.</p></li>
+        <p>QuickSend sends one by one with a short random pause and shows the totals when it's done. Pro adds an Excel report of who received it.</p></li>
     </ol></div>
   </section>
 
@@ -259,9 +260,9 @@
     <div class="feat">
       <div><h3>Send only to the right people</h3><p>Choose a column like Amount and rows with 0 or blank are skipped automatically.</p></div>
       <div><h3>Templates you can edit</h3><p>Payment reminder, follow-up, target status, offers, meetings, greetings - or save your own.</p></div>
-      <div><h3>Saved contacts and groups</h3><p>Keep customers, dealers or staff in groups and tick a whole group in one click.</p></div>
-      <div><h3>Test before you send</h3><p>Send the first message to your own number and check it on your phone.</p></div>
-      <div><h3>Stop, resume, report</h3><p>Pause any time and continue later. Download a report with the status of every row.</p></div>
+      <div><h3>Saved contacts and groups <span class="pro">Pro</span></h3><p>Keep customers, dealers or staff in groups and tick a whole group in one click.</p></div>
+      <div><h3>Test, stop and resume</h3><p>Send the first message to your own number, pause any time and continue later.</p></div>
+      <div><h3>Excel report <span class="pro">Pro</span></h3><p>Download a report with the result of every row - sent, not on WhatsApp or skipped.</p></div>
       <div><h3>Your data stays with you</h3><p>Excel files and contacts are read inside your browser. They are never uploaded to us.</p></div>
     </div>
   </section>
@@ -276,20 +277,20 @@
       <div class="plan">
         <h3>Free</h3>
         <div class="price">₹0</div><div class="per">every month</div>
-        <ul><li>50 messages a month</li><li>All features included</li><li>Resets on the 1st</li></ul>
+        <ul><li>50 messages a month</li><li>Send from Excel or a pasted number list</li><li>Templates, filters, preview and test message</li><li>Resets on the 1st</li></ul>
         <a class="btn alt" href="https://chromewebstore.google.com/detail/onipoefkcpcnjhghhheaggbbakdejmdi">Add to Chrome</a>
       </div>
       <div class="plan best">
         <h3>Pro yearly</h3>
         <div class="price">₹2,499</div><div class="per">for 12 months <span class="save">save ₹1,089</span></div>
-        <ul><li>Unlimited messages</li><li>Works on 2 PCs</li><li>License key by email within minutes</li><li>Renewal reminder before it ends</li></ul>
+        <ul><li>Unlimited messages</li><li>Saved contacts and groups</li><li>Excel report of every run</li><li>Works on 2 PCs</li><li>Renewal reminder before it ends</li></ul>
         <!-- Replace with your yearly Razorpay page link -->
-        <a class="btn green" href="YEARLY_PAGE_LINK">Buy 1 year</a>
+        <a class="btn green" href="https://rzp.io/rzp/quicksend-pro-year">Buy 1 year</a>
       </div>
       <div class="plan">
         <h3>Pro monthly</h3>
         <div class="price">₹299</div><div class="per">for 1 month</div>
-        <ul><li>Unlimited messages</li><li>Works on 2 PCs</li><li>Renew any time with the same email</li></ul>
+        <ul><li>Unlimited messages</li><li>Saved contacts and groups</li><li>Excel report of every run</li><li>Works on 2 PCs</li></ul>
         <a class="btn" href="https://rzp.io/l/quicksend-pro">Buy 1 month</a>
       </div>
     </div>
@@ -329,6 +330,8 @@
         <p>It reaches the email you entered at payment within about 10 minutes. Check Spam and Promotions. Still missing? Write to us with your payment ID.</p></details>
       <details><summary>How do I cancel Pro?</summary>
         <p>There's nothing to cancel. Pro is prepaid and never charges automatically - it simply ends on the date shown in the panel unless you renew.</p></details>
+      <details><summary>What's the difference between Free and Pro?</summary>
+        <p>Free gives you 50 messages a month with Excel and number-list sending, templates, filters and test messages. Pro removes the limit and adds saved contacts and groups, "Save to contacts", and an Excel report of every run.</p></details>
       <details><summary>Can I send images or PDFs?</summary>
         <p>Not yet. QuickSend sends text messages with formatting (bold, italic) and emojis.</p></details>
     </div>
